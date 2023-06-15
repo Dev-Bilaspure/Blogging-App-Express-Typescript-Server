@@ -10,7 +10,8 @@
     "predev": "yarn build",
     "watch-ts": "npx tsc -w",
     "start-server": "npx nodemon dist/index.js",
-    "dev": "npm-run-all --parallel watch-ts start-server"
+    "dev": "npm-run-all --parallel watch-ts start-server",
+    "lint": "eslint ./src --ext .tsx --ext .ts --ext .jsx --ext .js"
   },
   "keywords": [],
   "author": "",
