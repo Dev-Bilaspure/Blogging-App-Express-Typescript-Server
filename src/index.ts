@@ -20,9 +20,10 @@ app.get("/test", (req: Request, res: Response) => {
 
 app.get("/", (req: Request, res: Response) => {
   const message = `
-    <h3>Welcome to maadhyam-server-app!</h2>
-    <br />
-    <h3>Checkout the API documentation <a href="https://github.com/Dev-Bilaspure/Blogging-App-Express-Typescript-Server">API Doc</a></h2>
+    <div style="text-align: center;">
+      <h1>Welcome to maadhyam-server-app!</h1>
+      <p style="font-size: 18px;">Check out the API documentation <a href="https://github.com/Dev-Bilaspure/Blogging-App-Express-Typescript-Server">here</a>.</p>
+    </div>
   `;
   res.send(message);
 });
