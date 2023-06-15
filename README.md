@@ -2,9 +2,9 @@
 
 Introducing a powerful REST API server for captivating blogging applications. Built on Express.js and TypeScript, it provides a scalable and efficient backend infrastructure for creating, publishing, and managing engaging blog posts. With user authentication, intuitive CRUD operations, comprehensive error handling, and robust validation, developers can confidently build secure and feature-rich blogging platforms. The server also includes essential role-based access control, allowing administrators to manage user roles and permissions. Its flexible and extensible architecture enables customization to meet unique application requirements.
 
-### Base URL:
+#### App is hosted on (Render)[https://render.com/]
 ```bash
-https://maadyam-app-server.onrender.com
+Base URL: https://maadyam-app-server.onrender.com
 ```
 
 
