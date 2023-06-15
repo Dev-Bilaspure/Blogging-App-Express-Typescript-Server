@@ -8,8 +8,7 @@ Introducing a powerful REST API server for captivating blogging applications. Bu
 
 ### API Routes:
 
-Base URL:  `https://maadyam-app-server.onrender.com`
-(App is hosted on [Render](https://render.com/))
+Base URL:  `https://maadyam-app-server.onrender.com` (App is hosted on [Render](https://render.com/)) or `http://localhost:8000` (When running in local env.)
 
 
 #### Auth Routes: 
