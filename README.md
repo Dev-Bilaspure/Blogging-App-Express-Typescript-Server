@@ -7,10 +7,12 @@ Introducing a powerful REST API server for captivating blogging applications. Bu
 #### Auth Routes:
 `POST /signup` - Creates a new user.
 `POST /login` - Logs in a user.
+
 `GET /me` - Retrieves the currently authenticated user.
 
 #### User Routes:
 `GET /:userId` - Retrieves a user by their ID.
+
 `PUT /:userId` - Updates a user by their ID.
 `PUT /follow/:currentUserId` - Allows the currently authenticated user to follow another user.
 `PUT /unfollow/:currentUserId` - Allows the currently authenticated user to unfollow a user.
