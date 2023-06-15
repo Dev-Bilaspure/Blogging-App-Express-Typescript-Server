@@ -40,7 +40,8 @@
     "@types/bcryptjs": "^2.4.2",
     "@types/cors": "^2.8.13",
     "@types/jsonwebtoken": "^9.0.2",
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "strip-ansi": "^7.1.0"
   },
   "engines": {
     "node": ">=14.20.1"
