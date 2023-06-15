@@ -18,6 +18,15 @@ app.get("/test", (req: Request, res: Response) => {
   res.json("Your express app with typescript!!");
 });
 
+app.get("/", (req: Request, res: Response) => {
+  const message = `
+    <h2>Welcome to maadhyam-server-app ${PORT}</h2>
+    <br />
+    <h2>Checkout the API documentation <a href="https://github.com/Dev-Bilaspure/Blogging-App-Express-Typescript-Server">here</a></h2>
+  `;
+  res.send(message);
+});
+
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/posts", postRouter);
