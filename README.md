@@ -4,6 +4,7 @@ Introducing a powerful REST API server for captivating blogging applications. Bu
 
 #### React frontend is hosted here: https://storied-sorbet-6b366f.netlify.app
 #### Frontend Repository: https://github.com/Dev-Bilaspure/blog-app-ui-react
+#### New Front Repository (New: Migrating to TypeScript | Work In Progress): https://github.com/Dev-Bilaspure/Blogging-App-React-Typescript-Frontend
 
 ## API Documentation:
 
