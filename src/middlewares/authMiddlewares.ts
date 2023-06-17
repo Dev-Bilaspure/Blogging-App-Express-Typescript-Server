@@ -13,23 +13,25 @@ export const authenticateTokenToInitializeUser = (
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
   if (!token) {
-    return res
+    res
       .status(401)
       .json({
         success: false,
         message: "Token not found",
         errorType: TOKEN_NOT_FOUND,
       });
+    return;
   }
   jwt.verify(token, process.env.JWT_SECRET as string, (err: any, user: any) => {
     if (err) {
-      return res
+      res
         .status(403)
         .json({
           success: false,
           message: "Invalid token",
           errorType: INVALID_TOKEN,
         });
+      return;
     }
     req.body = { user, ...req.body };
     next();
@@ -44,23 +46,25 @@ export const authenticateToken = (
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
   if (!token) {
-    return res
+    res
       .status(401)
       .json({
         success: false,
         message: "Token not found",
         errorType: TOKEN_NOT_FOUND,
       });
+    return;
   }
   jwt.verify(token, process.env.JWT_SECRET as string, (err: any, user: any) => {
     if (err) {
-      return res
+      res
         .status(403)
         .json({
           success: false,
           message: "Invalid token",
           errorType: INVALID_TOKEN,
         });
+      return;
     }
     next();
   });
