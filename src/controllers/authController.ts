@@ -120,6 +120,7 @@ export const loginUser = async (req: Request, res: Response) => {
       success: true,
       message: "User logged in successfully!",
       token,
+      user
     });
   } catch (error) {
     res

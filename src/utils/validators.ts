@@ -59,7 +59,7 @@ export const createUpdatePostSchema = z
     tags: z.array(z.string()).optional(),
     isPublished: z.boolean().optional(),
     userId: z.string().nonempty("User ID is required"),
-    postId: z.string().nonempty("Post ID is required"),
+    postId: z.string(),
   })
   .strict();
 

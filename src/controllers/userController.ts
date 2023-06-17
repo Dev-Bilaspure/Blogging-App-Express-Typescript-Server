@@ -96,6 +96,7 @@ export const followAUser = async (req: Request, res: Response) => {
         error,
         errorType: BAD_REQUEST,
       });
+      return;
     }
     const currentUserId = req.params.currentUserId;
     const userIdToFollow = req.body.userIdToFollow;
@@ -174,6 +175,7 @@ export const unFollowAUser = async (req: Request, res: Response) => {
         error,
         errorType: BAD_REQUEST,
       });
+      return;
     }
     const currentUserId = req.params.currentUserId;
     const userIdToUnfollow = req.body.userIdToUnfollow;
@@ -352,6 +354,7 @@ export const bookmarkAPost = async (req: Request, res: Response) => {
         error,
         errorType: BAD_REQUEST,
       });
+      return;
     }
     const { userId } = req.params;
     const user = await User.findById(userId);
@@ -416,6 +419,7 @@ export const unbookmarkAPost = async (req: Request, res: Response) => {
         error,
         errorType: BAD_REQUEST,
       });
+      return;
     }
 
     const { userId } = req.params;

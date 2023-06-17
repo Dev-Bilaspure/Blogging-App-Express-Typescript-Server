@@ -22,14 +22,12 @@ export const getAllPosts = async (req: Request, res: Response) => {
     }
     res.status(200).json({ success: true, posts, message: "All posts found" });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal server error",
-        error,
-        errorType: INTERNAL_SERVER_ERROR,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    });
   }
 };
 
@@ -40,26 +38,22 @@ export const getPostById = async (req: Request, res: Response) => {
     const post = await Post.findById(postId);
 
     if (!post) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "Post not found",
-          errorType: RESOURCE_NOT_FOUND,
-        });
+      res.status(404).json({
+        success: false,
+        message: "Post not found",
+        errorType: RESOURCE_NOT_FOUND,
+      });
       return;
     }
 
     res.status(200).json({ success: true, post, message: "Post found" });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal server error",
-        error,
-        errorType: INTERNAL_SERVER_ERROR,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    });
   }
 };
 
@@ -68,13 +62,11 @@ export const getPostsByUserId = async (req: Request, res: Response) => {
     const { userId } = req.params;
     const user = await User.findById(userId);
     if (!user) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "User not found",
-          errorType: RESOURCE_NOT_FOUND,
-        });
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+        errorType: RESOURCE_NOT_FOUND,
+      });
       return;
     }
 
@@ -91,14 +83,12 @@ export const getPostsByUserId = async (req: Request, res: Response) => {
 
     res.status(200).json({ success: true, posts, message: "Posts found" });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal server error",
-        error,
-        errorType: INTERNAL_SERVER_ERROR,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    });
   }
 };
 
@@ -113,6 +103,7 @@ export const createUpdatePost = async (req: Request, res: Response) => {
         error,
         errorType: BAD_REQUEST,
       });
+      return;
     }
 
     const { postId, userId, ...postInfo } = req.body;
@@ -176,14 +167,12 @@ export const createUpdatePost = async (req: Request, res: Response) => {
       });
     }
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal server error",
-        error,
-        errorType: INTERNAL_SERVER_ERROR,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    });
   }
 };
 
@@ -198,6 +187,7 @@ export const publishPost = async (req: Request, res: Response) => {
         error,
         errorType: BAD_REQUEST,
       });
+      return;
     }
     const { postId } = req.params;
     const post = await Post.findById(postId);
@@ -234,14 +224,12 @@ export const publishPost = async (req: Request, res: Response) => {
       post: postPublished,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal server error",
-        error,
-        errorType: INTERNAL_SERVER_ERROR,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    });
   }
 };
 
@@ -256,6 +244,7 @@ export const unpublishPost = async (req: Request, res: Response) => {
         error,
         errorType: BAD_REQUEST,
       });
+      return;
     }
     const { postId } = req.params;
     const post = await Post.findById(postId);
@@ -292,14 +281,12 @@ export const unpublishPost = async (req: Request, res: Response) => {
       post: postUnpublished,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal server error",
-        error,
-        errorType: INTERNAL_SERVER_ERROR,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    });
   }
 };
 
@@ -308,13 +295,11 @@ export const deletePost = async (req: Request, res: Response) => {
     const { postId, userId } = req.params;
     const post = await Post.findById(postId);
     if (!post) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "Post not found",
-          errorType: RESOURCE_NOT_FOUND,
-        });
+      res.status(404).json({
+        success: false,
+        message: "Post not found",
+        errorType: RESOURCE_NOT_FOUND,
+      });
       return;
     }
     if (post.authorId.toString() !== userId) {
@@ -332,14 +317,12 @@ export const deletePost = async (req: Request, res: Response) => {
       post: deletedPost,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal server error",
-        error,
-        errorType: INTERNAL_SERVER_ERROR,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    });
   }
 };
 
@@ -354,42 +337,37 @@ export const likeAPost = async (req: Request, res: Response) => {
         error,
         errorType: BAD_REQUEST,
       });
+      return;
     }
     const { userId } = req.body;
     const user = await User.findById(userId);
     if (!user) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "User not found",
-          errorType: RESOURCE_NOT_FOUND,
-        });
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+        errorType: RESOURCE_NOT_FOUND,
+      });
       return;
     }
 
     const { postId } = req.params;
     const post = await Post.findById(postId);
     if (!post) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "Post not found",
-          errorType: RESOURCE_NOT_FOUND,
-        });
+      res.status(404).json({
+        success: false,
+        message: "Post not found",
+        errorType: RESOURCE_NOT_FOUND,
+      });
       return;
     }
 
     const isLiked = post.likes.includes(userId);
     if (isLiked) {
-      res
-        .status(400)
-        .json({
-          success: false,
-          message: "You have already liked this post",
-          errorType: BAD_REQUEST,
-        });
+      res.status(400).json({
+        success: false,
+        message: "You have already liked this post",
+        errorType: BAD_REQUEST,
+      });
       return;
     }
 
@@ -404,14 +382,12 @@ export const likeAPost = async (req: Request, res: Response) => {
       message: "Post liked successfully",
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal server error",
-        error,
-        errorType: INTERNAL_SERVER_ERROR,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    });
   }
 };
 
@@ -426,42 +402,37 @@ export const unlikeAPost = async (req: Request, res: Response) => {
         error,
         errorType: BAD_REQUEST,
       });
+      return;
     }
     const { userId } = req.body;
     const user = await User.findById(userId);
     if (!user) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "User not found",
-          errorType: RESOURCE_NOT_FOUND,
-        });
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+        errorType: RESOURCE_NOT_FOUND,
+      });
       return;
     }
 
     const { postId } = req.params;
     const post = await Post.findById(postId);
     if (!post) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "Post not found",
-          errorType: RESOURCE_NOT_FOUND,
-        });
+      res.status(404).json({
+        success: false,
+        message: "Post not found",
+        errorType: RESOURCE_NOT_FOUND,
+      });
       return;
     }
 
     const isLiked = post.likes.includes(userId);
     if (!isLiked) {
-      res
-        .status(400)
-        .json({
-          success: false,
-          message: "You have not liked this post",
-          errorType: BAD_REQUEST,
-        });
+      res.status(400).json({
+        success: false,
+        message: "You have not liked this post",
+        errorType: BAD_REQUEST,
+      });
       return;
     }
 
@@ -476,14 +447,12 @@ export const unlikeAPost = async (req: Request, res: Response) => {
       message: "Post unliked successfully",
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal server error",
-        error,
-        errorType: INTERNAL_SERVER_ERROR,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    });
   }
 };
 
@@ -492,13 +461,11 @@ export const getUsersLikedPosts = async (req: Request, res: Response) => {
     const { userId } = req.params;
     const user = await User.findById(userId);
     if (!user) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "User not found",
-          errorType: RESOURCE_NOT_FOUND,
-        });
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+        errorType: RESOURCE_NOT_FOUND,
+      });
       return;
     }
     const posts = await Post.find({ likes: { $in: [userId] } });
@@ -510,17 +477,35 @@ export const getUsersLikedPosts = async (req: Request, res: Response) => {
       .status(200)
       .json({ success: true, posts, message: "Posts fetched successfully" });
   } catch (error) {
-    res
-      .status(200)
-      .json({
-        success: false,
-        message: "Internal server error",
-        error,
-        errorType: INTERNAL_SERVER_ERROR,
-      });
+    res.status(200).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    });
   }
 };
 
+export const getPostsByTag = async (req: Request, res: Response) => {
+  try {
+    const { tag } = req.params;
+    const posts = await Post.find({ tags: { $in: [tag] } }).sort({
+      createdAt: -1,
+    });
+    if (posts.length === 0) {
+      res.status(200).json({ success: true, posts, message: "No posts found" });
+      return;
+    }
+    res.status(200).json({ success: true, posts, message: "All posts found" });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    });
+  }
+};
 /// Dump============================
 
 // export const createPost = async (req: Request, res: Response) => {

@@ -4,6 +4,7 @@ import {
   deletePost,
   getAllPosts,
   getPostById,
+  getPostsByTag,
   getPostsByUserId,
   getUsersLikedPosts,
   likeAPost,
@@ -25,5 +26,7 @@ router.delete("/:postId/:userId", authenticateToken, deletePost);
 router.put("/like/:postId", authenticateToken, likeAPost);
 router.put("/unlike/:postId", authenticateToken, unlikeAPost);
 router.get("/liked-posts/:userId", authenticateToken, getUsersLikedPosts);
+router.get('/tag/:tag', getPostsByTag);
+
 
 export default router;

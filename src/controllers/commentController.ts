@@ -26,30 +26,27 @@ export const createComment = async (req: Request, res: Response) => {
         message: "Some fields are missing or invalid",
         errorType: BAD_REQUEST,
       });
+      return;
     }
 
     const { authorId, postId } = req.body;
     const user = await User.findById(authorId);
     if (!user) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "User not found",
-          errorType: RESOURCE_NOT_FOUND,
-        });
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+        errorType: RESOURCE_NOT_FOUND,
+      });
       return;
     }
 
     const post = await Post.findById(postId);
     if (!post) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "Post not found",
-          errorType: RESOURCE_NOT_FOUND,
-        });
+      res.status(404).json({
+        success: false,
+        message: "Post not found",
+        errorType: RESOURCE_NOT_FOUND,
+      });
       return;
     }
 
@@ -70,14 +67,12 @@ export const createComment = async (req: Request, res: Response) => {
       message: "Comment created successfully",
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal server error",
-        error,
-        errorType: INTERNAL_SERVER_ERROR,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    });
   }
 };
 
@@ -92,6 +87,7 @@ export const updateComment = async (req: Request, res: Response) => {
         message: "Some fields are missing or invalid",
         errorType: BAD_REQUEST,
       });
+      return;
     }
 
     const { userId, content } = req.body;
@@ -99,25 +95,21 @@ export const updateComment = async (req: Request, res: Response) => {
 
     const user = await User.findById(userId);
     if (!user) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "User not found",
-          errorType: RESOURCE_NOT_FOUND,
-        });
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+        errorType: RESOURCE_NOT_FOUND,
+      });
       return;
     }
 
     const comment = await Comment.findById(commentId);
     if (!comment) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "Comment not found",
-          errorType: RESOURCE_NOT_FOUND,
-        });
+      res.status(404).json({
+        success: false,
+        message: "Comment not found",
+        errorType: RESOURCE_NOT_FOUND,
+      });
       return;
     }
 
@@ -141,14 +133,12 @@ export const updateComment = async (req: Request, res: Response) => {
       message: "Comment updated successfully",
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal server error",
-        error,
-        errorType: INTERNAL_SERVER_ERROR,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    });
   }
 };
 
@@ -157,25 +147,21 @@ export const deleteComment = async (req: Request, res: Response) => {
     const { userId, commentId } = req.params;
     const comment = await Comment.findById(commentId);
     if (!comment) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "Comment not found",
-          errorType: RESOURCE_NOT_FOUND,
-        });
+      res.status(404).json({
+        success: false,
+        message: "Comment not found",
+        errorType: RESOURCE_NOT_FOUND,
+      });
       return;
     }
 
     const user = await User.findById(userId);
     if (!user) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "User not found",
-          errorType: RESOURCE_NOT_FOUND,
-        });
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+        errorType: RESOURCE_NOT_FOUND,
+      });
       return;
     }
 
@@ -195,14 +181,12 @@ export const deleteComment = async (req: Request, res: Response) => {
       message: "Comment deleted successfully",
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal server error",
-        error,
-        errorType: INTERNAL_SERVER_ERROR,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    });
   }
 };
 
@@ -211,13 +195,11 @@ export const getPostComments = async (req: Request, res: Response) => {
     const { postId } = req.params;
     const post = await Post.findById(postId);
     if (!post) {
-      res
-        .status(400)
-        .json({
-          success: false,
-          message: "Post id is required",
-          errorType: BAD_REQUEST,
-        });
+      res.status(400).json({
+        success: false,
+        message: "Post id is required",
+        errorType: BAD_REQUEST,
+      });
       return;
     }
 
@@ -229,14 +211,12 @@ export const getPostComments = async (req: Request, res: Response) => {
       message: "Comments fetched successfully",
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal server error",
-        error,
-        errorType: INTERNAL_SERVER_ERROR,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    });
   }
 };
 
@@ -251,44 +231,39 @@ export const likeAComment = async (req: Request, res: Response) => {
         message: "Some fields are missing or invalid",
         errorType: BAD_REQUEST,
       });
+      return;
     }
 
     const { userId } = req.body;
 
     const user = await User.findById(userId);
     if (!user) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "User not found",
-          errorType: RESOURCE_NOT_FOUND,
-        });
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+        errorType: RESOURCE_NOT_FOUND,
+      });
       return;
     }
 
     const { commentId } = req.params;
     const comment = await Comment.findById(commentId);
     if (!comment) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "Comment not found",
-          errorType: RESOURCE_NOT_FOUND,
-        });
+      res.status(404).json({
+        success: false,
+        message: "Comment not found",
+        errorType: RESOURCE_NOT_FOUND,
+      });
       return;
     }
 
     const isLiked = comment.likes.includes(userId);
     if (isLiked) {
-      res
-        .status(400)
-        .json({
-          success: false,
-          message: "Comment already liked",
-          errorType: BAD_REQUEST,
-        });
+      res.status(400).json({
+        success: false,
+        message: "Comment already liked",
+        errorType: BAD_REQUEST,
+      });
       return;
     }
 
@@ -304,14 +279,12 @@ export const likeAComment = async (req: Request, res: Response) => {
       message: "Comment liked successfully",
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal server error",
-        error,
-        errorType: INTERNAL_SERVER_ERROR,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    });
   }
 };
 
@@ -326,31 +299,28 @@ export const unlikeAComment = async (req: Request, res: Response) => {
         message: "Some fields are missing or invalid",
         errorType: BAD_REQUEST,
       });
+      return;
     }
 
     const { userId } = req.body;
     const user = await User.findById(userId);
     if (!user) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "User not found",
-          errorType: RESOURCE_NOT_FOUND,
-        });
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+        errorType: RESOURCE_NOT_FOUND,
+      });
       return;
     }
 
     const { commentId } = req.params;
     const comment = await Comment.findById(commentId);
     if (!comment) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "Comment not found",
-          errorType: RESOURCE_NOT_FOUND,
-        });
+      res.status(404).json({
+        success: false,
+        message: "Comment not found",
+        errorType: RESOURCE_NOT_FOUND,
+      });
       return;
     }
 
@@ -377,13 +347,11 @@ export const unlikeAComment = async (req: Request, res: Response) => {
       comment: updatedComment,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal server error",
-        error,
-        errorType: INTERNAL_SERVER_ERROR,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    });
   }
 };
