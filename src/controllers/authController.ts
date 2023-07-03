@@ -136,7 +136,8 @@ export const loginUser = async (req: Request, res: Response) => {
 
 export const getMe = async (req: Request, res: Response) => {
   try {
-    const user = await User.findOne({ email: req.body.user.email });
+    const user = await User.findOne({ email: req.body.user.user.email });
+    
     res.status(200).json({ success: true, user, message: "User found" });
   } catch (error) {
     res

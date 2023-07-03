@@ -5,6 +5,7 @@ import {
   createUpdatePostSchema,
   likeUnlikePostUpdatesSchema,
   publishUnpublishPostSchema,
+  updatePostSchema,
 } from "../utils/validators";
 import {
   BAD_REQUEST,
@@ -82,90 +83,6 @@ export const getPostsByUserId = async (req: Request, res: Response) => {
     }
 
     res.status(200).json({ success: true, posts, message: "Posts found" });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error,
-      errorType: INTERNAL_SERVER_ERROR,
-    });
-  }
-};
-
-export const createUpdatePost = async (req: Request, res: Response) => {
-  try {
-    try {
-      createUpdatePostSchema.parse(req.body);
-    } catch (error) {
-      res.status(400).json({
-        success: false,
-        message: "Some fields are missing or invalid",
-        error,
-        errorType: BAD_REQUEST,
-      });
-      return;
-    }
-
-    const { postId, userId, ...postInfo } = req.body;
-    if (postId) {
-      const post = await Post.findById(postId);
-      if (!post) {
-        res.status(404).json({
-          success: false,
-          message: "Post not found",
-          errorType: RESOURCE_NOT_FOUND,
-        });
-        return;
-      }
-
-      if (post.authorId.toString() !== req.body.userId.toString()) {
-        res.status(401).json({
-          success: false,
-          message: "You can only update your own posts",
-          errorType: UNAUTHORIZED,
-        });
-        return;
-      }
-      if (req.body.title) post.title = req.body.title;
-      if (req.body.description) post.description = req.body.description;
-      if (req.body.image) post.image = req.body.image;
-      if (req.body.tags) post.tags = req.body.tags;
-
-      const updatedPost = await Post.findByIdAndUpdate(postId, post, {
-        new: true,
-      });
-      res.status(200).json({
-        success: true,
-        message: "Post updated sucessfully",
-        post: updatedPost,
-      });
-    } else {
-      const user = await User.findById(userId);
-      if (!user) {
-        res.status(404).json({
-          success: false,
-          message: "User not found",
-          errorType: RESOURCE_NOT_FOUND,
-        });
-        return;
-      }
-
-      const newPost = new Post({
-        postInfo,
-        authorId: userId,
-        authorInfo: {
-          firstName: user.firstName,
-          lastName: user.lastName,
-          profilePicture: user.profilePicture || "someimg",
-        },
-      });
-      const savedPost = await newPost.save();
-      res.status(201).json({
-        success: true,
-        message: "Post created sucessfully",
-        post: savedPost,
-      });
-    }
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -506,6 +423,78 @@ export const getPostsByTag = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const updatePost = async (req: Request, res: Response) => {
+  try {
+    try {
+      updatePostSchema.parse(req.body);
+    } catch (error) {
+      res.status(400).json({
+        success: false,
+        message: "Some fields are missing or invalid",
+        error,
+        errorType: BAD_REQUEST,
+      });
+      return;
+    }
+
+    const { postId } = req.params;
+
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      res
+        .status(404)
+        .json({
+          success: false,
+          message: "Post not found",
+          errorType: RESOURCE_NOT_FOUND,
+        });
+      return;
+    }
+
+    const user = await User.findById(req.body.authorId);
+    if (!user) {
+      res
+        .status(404)
+        .json({
+          success: false,
+          message: "User not found",
+          errorType: RESOURCE_NOT_FOUND,
+        });
+      return;
+    }
+    if (post.authorId.toString() !== req.body.authorId.toString()) {
+      res.status(401).json({
+        success: false,
+        message: "You can only update your own posts",
+        errorType: UNAUTHORIZED,
+      });
+      return;
+    }
+
+    if (req.body.tags !== undefined) post.tags = req.body.tags;
+    if (req.body.isPublished !== undefined)
+      post.isPublished = req.body.isPublished;
+    if (req.body.isCommentsEnabled !== undefined)
+      post.isCommentsEnabled = req.body.isCommentsEnabled;
+
+    const updatedPost = await Post.findByIdAndUpdate(postId, post, {
+      new: true,
+    });
+
+    res.status(200).json({
+      success: true,
+      post: updatedPost,
+      message: "Post updated successfully",
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Internal server error", error });
+  }
+};
+
 /// Dump============================
 
 // export const createPost = async (req: Request, res: Response) => {
@@ -540,56 +529,6 @@ export const getPostsByTag = async (req: Request, res: Response) => {
 //       success: true,
 //       post: savedPost,
 //       message: "Post created successfully",
-//     });
-//   } catch (error) {
-//     res
-//       .status(500)
-//       .json({ success: false, message: "Internal server error", error });
-//   }
-// };
-
-// export const updatePost = async (req: Request, res: Response) => {
-//   try {
-//     try {
-//       updatePostSchema.parse(req.body);
-//     } catch (error) {
-//       res.status(400).json({
-//         success: false,
-//         message: "Some fields are missing or invalid",
-//         error,
-//       });
-//     }
-
-//     const { postId } = req.params;
-
-//     const post = await Post.findById(postId);
-
-//     if (!post) {
-//       res.status(404).json({ success: false, message: "Post not found" });
-//       return;
-//     }
-//     if (post.authorId.toString() !== req.body.userId.toString()) {
-//       res.status(401).json({
-//         success: false,
-//         message: "You can only update your own posts",
-//       });
-//       return;
-//     }
-
-//     if (req.body.title) post.title = req.body.title;
-//     if (req.body.description) post.description = req.body.description;
-//     if (req.body.image) post.image = req.body.image;
-//     if (req.body.tags) post.tags = req.body.tags;
-//     if (req.body.isPublished) post.isPublished = req.body.isPublished;
-
-//     const updatedPost = await Post.findByIdAndUpdate(postId, post, {
-//       new: true,
-//     });
-
-//     res.status(200).json({
-//       success: true,
-//       post: updatedPost,
-//       message: "Post updated successfully",
 //     });
 //   } catch (error) {
 //     res

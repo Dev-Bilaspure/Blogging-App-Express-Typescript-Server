@@ -7,20 +7,6 @@ const PostSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    authorInfo: {
-      firstName: {
-        type: String,
-        required: true,
-      },
-      lastName: {
-        type: String,
-        required: true,
-      },
-      profilePicture: {
-        type: String,
-        required: true,
-      },
-    },
     image: {
       type: String,
     },
@@ -51,6 +37,10 @@ const PostSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isCommentsEnabled: {
+      type: Boolean,
+      default: true,
+    }
   },
   {
     timestamps: true,

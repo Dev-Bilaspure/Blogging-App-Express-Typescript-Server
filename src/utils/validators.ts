@@ -49,8 +49,6 @@ export const unfollowUserSchema = z
   })
   .strict();
 
-
-
 export const createUpdatePostSchema = z
   .object({
     title: z.string().optional(),
@@ -63,9 +61,11 @@ export const createUpdatePostSchema = z
   })
   .strict();
 
-export const publishUnpublishPostSchema = z.object({
-  userId: z.string().nonempty("User ID is required"),
-}).strict();
+export const publishUnpublishPostSchema = z
+  .object({
+    userId: z.string().nonempty("User ID is required"),
+  })
+  .strict();
 
 export const likeUnlikePostUpdatesSchema = z
   .object({
@@ -100,29 +100,30 @@ export const likeUnlikeACommentSchema = z
   })
   .strict();
 
+export const createPostSchema = z
+  .object({
+    title: z.string(),
+    description: z.string(),
+    image: z.string(),
+    authorId: z.string().nonempty("Author ID is required"),
+  })
+  .strict();
 
-// dump=============================================:
+export const updatePostSocketSchema = z
+  .object({
+    postId: z.string().nonempty("Post ID is required"),
+    title: z.string(),
+    description: z.string(),
+    image: z.string(),
+    authorId: z.string().nonempty("Author ID is required"),
+  })
+  .strict();
 
-
-
-// export const createPostSchema = z
-//   .object({
-//     title: z.string().nonempty("Title is required"),
-//     description: z.string().nonempty("Description is required"),
-//     image: z.string().optional(),
-//     tags: z.array(z.string()).optional(),
-//     isPublished: z.boolean(),
-//     authorId: z.string().nonempty("Author ID is required"),
-//   })
-//   .strict();
-
-// export const updatePostSchema = z
-//   .object({
-//     title: z.string().nonempty("Title cannot be empty").optional(),
-//     description: z.string().nonempty("Description cannot be empty").optional(),
-//     image: z.string().optional(),
-//     tags: z.array(z.string()).optional(),
-//     isPublished: z.boolean().optional(),
-//     userId: z.string().nonempty("User ID is required"),
-//   })
-//   .strict();
+export const updatePostSchema = z
+  .object({
+    tags: z.array(z.string()),
+    isPublished: z.boolean(),
+    isCommentsEnabled: z.boolean(),
+    authorId: z.string().nonempty("Author ID is required"),
+  })
+  .strict();
