@@ -32,7 +32,7 @@ Base URL:  `https://maadyam-app-server.onrender.com` (App is hosted on [Render](
   - `PUT /bookmark/:userId` - Adds a post to the bookmarks of a user.
   - `PUT /unbookmark/:userId` - Removes a post from the bookmarks of a user.
   - `GET /bookmarked-posts/:userId` - Retrieves the posts bookmarked by a user.
-  - `GET /users/suggestions` - Retrieves suggested users.
+  - `GET /users/suggestions` - Retrieves suggested users
 
 #### Post Routes: 
 - Base URL: `/api/posts`
