@@ -16,7 +16,9 @@ import {
 
 export const getAllPosts = async (req: Request, res: Response) => {
   try {
-    const posts = await Post.find().sort({ createdAt: -1 });
+    const posts = await Post.find({ isPublished: true }).sort({
+      createdAt: -1,
+    });
     if (posts.length === 0) {
       res.status(200).json({ success: true, posts, message: "No posts found" });
       return;
@@ -47,7 +49,22 @@ export const getPostById = async (req: Request, res: Response) => {
       return;
     }
 
-    res.status(200).json({ success: true, post, message: "Post found" });
+    const user = await User.findById(post?.authorId);
+
+    const authorInfo = {
+      _id: user?._id,
+      username: user?.username,
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      profilePicture: user?.profilePicture,
+      followers: user?.followers,
+    };
+
+    res.status(200).json({
+      success: true,
+      post: { ...post.toObject(), authorInfo },
+      message: "Post found",
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -57,6 +74,38 @@ export const getPostById = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const getNonPublishedPostsByUserId = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+        errorType: RESOURCE_NOT_FOUND,
+      });
+      return;
+    }
+    const posts = await Post.find({ authorId: userId, isPublished: false }).sort({ createdAt: -1 });
+    if(posts.length === 0) {
+      res.status(200).json({
+        success: true,
+        message: "No posts found for this user",
+        posts,
+      });
+      return;
+    }
+    res.status(200).json({ success: true, posts, message: "Posts found" });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    });
+  }
+}
 
 export const getPostsByUserId = async (req: Request, res: Response) => {
   try {
@@ -71,7 +120,9 @@ export const getPostsByUserId = async (req: Request, res: Response) => {
       return;
     }
 
-    const posts = await Post.find({ authorId: userId }).sort({ createdAt: -1 });
+    const posts = await Post.find({ authorId: userId, isPublished: true }).sort(
+      { createdAt: -1 }
+    );
 
     if (posts.length === 0) {
       res.status(200).json({
@@ -295,7 +346,7 @@ export const likeAPost = async (req: Request, res: Response) => {
     });
     res.status(200).json({
       success: true,
-      post: updatedPost,
+      post: updatedPost?.toObject(),
       message: "Post liked successfully",
     });
   } catch (error) {
@@ -360,7 +411,7 @@ export const unlikeAPost = async (req: Request, res: Response) => {
     });
     res.status(200).json({
       success: true,
-      post: updatedPost,
+      post: updatedPost?.toObject(),
       message: "Post unliked successfully",
     });
   } catch (error) {
@@ -385,9 +436,13 @@ export const getUsersLikedPosts = async (req: Request, res: Response) => {
       });
       return;
     }
-    const posts = await Post.find({ likes: { $in: [userId] } });
+    const posts = await Post.find({
+      likes: { $in: [userId] },
+      isPublished: true,
+    }).sort({ createdAt: -1 });
+
     if (posts.length === 0) {
-      res.status(404).json({ success: true, message: "No posts found", posts });
+      res.status(200).json({ success: true, message: "No posts found", posts });
       return;
     }
     res
@@ -443,25 +498,21 @@ export const updatePost = async (req: Request, res: Response) => {
     const post = await Post.findById(postId);
 
     if (!post) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "Post not found",
-          errorType: RESOURCE_NOT_FOUND,
-        });
+      res.status(404).json({
+        success: false,
+        message: "Post not found",
+        errorType: RESOURCE_NOT_FOUND,
+      });
       return;
     }
 
     const user = await User.findById(req.body.authorId);
     if (!user) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "User not found",
-          errorType: RESOURCE_NOT_FOUND,
-        });
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+        errorType: RESOURCE_NOT_FOUND,
+      });
       return;
     }
     if (post.authorId.toString() !== req.body.authorId.toString()) {
@@ -473,11 +524,9 @@ export const updatePost = async (req: Request, res: Response) => {
       return;
     }
 
-    if (req.body.tags !== undefined) post.tags = req.body.tags;
-    if (req.body.isPublished !== undefined)
-      post.isPublished = req.body.isPublished;
-    if (req.body.isCommentsEnabled !== undefined)
-      post.isCommentsEnabled = req.body.isCommentsEnabled;
+    post.tags = req.body.tags;
+    post.isPublished = req.body.isPublished;
+    post.isCommentsEnabled = req.body.isCommentsEnabled;
 
     const updatedPost = await Post.findByIdAndUpdate(postId, post, {
       new: true,

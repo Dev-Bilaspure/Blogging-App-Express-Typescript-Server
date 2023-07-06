@@ -121,7 +121,7 @@ export const followAUser = async (req: Request, res: Response) => {
       return;
     }
 
-    if (currentUserId === userIdToFollow.toString()) {
+    if (currentUserId.toString() === userIdToFollow.toString()) {
       res.status(400).json({
         success: false,
         message: "You can't follow yourself",
@@ -268,21 +268,10 @@ export const getUsersFollowers = async (req: Request, res: Response) => {
         .json({ success: true, message: "No followers found", followers });
       return;
     }
-    const refinedArray = followers.map((follower) => {
-      return {
-        _id: follower._id,
-        username: follower.username,
-        profilePicture: follower.profilePicture,
-        firstName: follower.firstName,
-        lastName: follower.lastName,
-        followersCount: follower.followers.length,
-        followingsCount: follower.followings.length,
-      };
-    });
 
     res.status(200).json({
       success: true,
-      users: refinedArray,
+      users: followers,
       message: "Followers found successfully.",
     });
   } catch (error) {
@@ -316,21 +305,10 @@ export const getUsersFollowings = async (req: Request, res: Response) => {
       });
       return;
     }
-    const refinedArray = followings.map((following) => {
-      return {
-        _id: following._id,
-        username: following.username,
-        profilePicture: following.profilePicture,
-        firstName: following.firstName,
-        lastName: following.lastName,
-        followersCount: following.followers.length,
-        followingsCount: following.followings.length,
-      };
-    });
 
     res.status(200).json({
       success: true,
-      users: refinedArray,
+      users: followings,
       message: "Followings found successfully.",
     });
   } catch (error) {
@@ -396,7 +374,7 @@ export const bookmarkAPost = async (req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       message: "Post bookmarked successfully",
-      user: updatedUser,
+      user: updatedUser?.toObject(),
     });
   } catch (error) {
     res.status(500).json({
@@ -464,7 +442,7 @@ export const unbookmarkAPost = async (req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       message: "Post unbookmarked successfully",
-      user: updatedUser,
+      user: updatedUser?.toObject(),
     });
   } catch (error) {
     res.status(500).json({
@@ -488,7 +466,7 @@ export const getUsersBookmarkedPosts = async (req: Request, res: Response) => {
       });
       return;
     }
-    const posts = await Post.find({ _id: { $in: user.bookmarks } }).sort({
+    const posts = await Post.find({ _id: { $in: user.bookmarks }, isPublished: true }).sort({
       createdAt: -1,
     });
     if (posts.length === 0) {
@@ -515,21 +493,10 @@ export const getUsersBookmarkedPosts = async (req: Request, res: Response) => {
 export const getSuggestedUsers = async (req: Request, res: Response) => {
   try {
     const users = await User.find().sort({ followers: -1 });
-    const refinedArray = users.map((user) => {
-      return {
-        _id: user._id,
-        username: user.username,
-        profilePicture: user.profilePicture,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        followersCount: user.followers.length,
-        followingsCount: user.followings.length,
-      };
-    });
 
     res.status(200).json({
       success: true,
-      users: refinedArray,
+      users,
       message: "Suggested users found successfully.",
     });
   } catch (error) {
@@ -541,3 +508,31 @@ export const getSuggestedUsers = async (req: Request, res: Response) => {
     });
   }
 };
+
+
+export const getUserByUsername = async (req: Request, res: Response) => {
+  try {
+    const {username} = req.params;
+    const user = await User.findOne({username});
+    if(!user){
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+        errorType: RESOURCE_NOT_FOUND,
+      });
+      return;
+    }
+    res.status(200).json({
+      success: true,
+      user,
+      message: "User found successfully.",
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    });
+  }
+}

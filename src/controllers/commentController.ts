@@ -63,7 +63,7 @@ export const createComment = async (req: Request, res: Response) => {
 
     res.status(201).json({
       success: true,
-      comment,
+      comment: comment?.toObject(),
       message: "Comment created successfully",
     });
   } catch (error) {
@@ -129,7 +129,7 @@ export const updateComment = async (req: Request, res: Response) => {
     );
     res.status(200).json({
       success: true,
-      updatedComment,
+      comment: updatedComment?.toObject(),
       message: "Comment updated successfully",
     });
   } catch (error) {
@@ -177,7 +177,7 @@ export const deleteComment = async (req: Request, res: Response) => {
     const deletedComment = await Comment.findByIdAndDelete(commentId);
     res.status(200).json({
       success: true,
-      comment: deletedComment,
+      comment: deletedComment?.toObject(),
       message: "Comment deleted successfully",
     });
   } catch (error) {
@@ -203,11 +203,13 @@ export const getPostComments = async (req: Request, res: Response) => {
       return;
     }
 
-    const comments = await Comment.find({ postId });
+    const comments = await Comment.find({ postId }).sort({
+      createdAt: -1,
+    });
 
     res.status(200).json({
       success: true,
-      comments,
+      comments: comments,
       message: "Comments fetched successfully",
     });
   } catch (error) {

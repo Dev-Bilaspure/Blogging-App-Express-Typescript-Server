@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   deletePost,
   getAllPosts,
+  getNonPublishedPostsByUserId,
   getPostById,
   getPostsByTag,
   getPostsByUserId,
@@ -18,6 +19,7 @@ const router = Router();
 
 router.get("/", getAllPosts);
 router.get("/:postId", getPostById);
+router.get("/unpublished/:userId", authenticateToken, getNonPublishedPostsByUserId);
 router.get("/user/:userId", getPostsByUserId);
 router.put("/publish/:postId", authenticateToken, publishPost);
 router.put("/unpublish/:postId", authenticateToken, unpublishPost);

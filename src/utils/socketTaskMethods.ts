@@ -61,7 +61,16 @@ export const createPost = async (data: any) => {
         errorType: BAD_REQUEST,
       };
     }
-    const post = await Post.create(data);
+    const user = await User.findById(data.authorId);
+    const post = await Post.create({
+      ...data,
+      authorInfo: {
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        profilePicture: user?.profilePicture,
+        username: user?.username,
+      },
+    });
     return { success: true, message: "Post created", post };
   } catch (error) {
     return {
