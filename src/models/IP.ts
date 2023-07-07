@@ -21,6 +21,6 @@ const IPSchema = new mongoose.Schema(
   }
 );
 
-const IP = mongoose.model("PostViewIP", IPSchema);
+const IP = mongoose.model("IP", IPSchema);
 
 export default IP;
