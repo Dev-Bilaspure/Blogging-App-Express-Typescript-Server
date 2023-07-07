@@ -13,6 +13,7 @@ import {
   RESOURCE_NOT_FOUND,
   UNAUTHORIZED,
 } from "../utils/errorTypes";
+import IP from "../models/IP";
 
 export const getAllPosts = async (req: Request, res: Response) => {
   try {
@@ -49,20 +50,32 @@ export const getPostById = async (req: Request, res: Response) => {
       return;
     }
 
-    const user = await User.findById(post?.authorId);
-
-    const authorInfo = {
-      _id: user?._id,
-      username: user?.username,
-      firstName: user?.firstName,
-      lastName: user?.lastName,
-      profilePicture: user?.profilePicture,
-      followers: user?.followers,
-    };
+    if (post.isPublished === true) {
+      const ipDoc = await IP.findOne({ ip: req.ip, resourceId: postId });
+      if (!ipDoc) {
+        await IP.create({
+          ip: req.ip,
+          resourceId: postId,
+          resourceType: "POST",
+        });
+        post.views += 1;
+        await post.save();
+      } else {
+        const lastViewedAt = new Date(ipDoc.updatedAt).getTime();
+        const now = new Date().getTime();
+        const difference = now - lastViewedAt;
+        if (difference > 1000 * 60 * 60) {
+          ipDoc.updatedAt = new Date();
+          await ipDoc.save();
+          post.views += 1;
+          await post.save();
+        }
+      }
+    }
 
     res.status(200).json({
       success: true,
-      post: { ...post.toObject(), authorInfo },
+      post: post.toObject(),
       message: "Post found",
     });
   } catch (error) {
@@ -75,7 +88,10 @@ export const getPostById = async (req: Request, res: Response) => {
   }
 };
 
-export const getNonPublishedPostsByUserId = async (req: Request, res: Response) => {
+export const getNonPublishedPostsByUserId = async (
+  req: Request,
+  res: Response
+) => {
   try {
     const { userId } = req.params;
     const user = await User.findById(userId);
@@ -87,8 +103,11 @@ export const getNonPublishedPostsByUserId = async (req: Request, res: Response) 
       });
       return;
     }
-    const posts = await Post.find({ authorId: userId, isPublished: false }).sort({ createdAt: -1 });
-    if(posts.length === 0) {
+    const posts = await Post.find({
+      authorId: userId,
+      isPublished: false,
+    }).sort({ createdAt: -1 });
+    if (posts.length === 0) {
       res.status(200).json({
         success: true,
         message: "No posts found for this user",
@@ -105,7 +124,7 @@ export const getNonPublishedPostsByUserId = async (req: Request, res: Response) 
       errorType: INTERNAL_SERVER_ERROR,
     });
   }
-}
+};
 
 export const getPostsByUserId = async (req: Request, res: Response) => {
   try {
