@@ -29,7 +29,7 @@ export async function verifyPassword(
 
 export const createToken = (user: any) => {
   const token = jwt.sign({ user }, process.env.JWT_SECRET as string, {
-    expiresIn: "7d",
+    expiresIn: "2d",
   });
   return token;
 };

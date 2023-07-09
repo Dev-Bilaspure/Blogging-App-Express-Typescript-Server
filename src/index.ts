@@ -10,12 +10,19 @@ import http from "http";
 import { createPost, getPostById, updatePost } from "./utils/socketTaskMethods";
 import { configDotenv } from "dotenv";
 import tagRouter from "./routes/tagRoutes";
+import cookieParser from "cookie-parser";
 
 const PORT = process.env.PORT || 8000;
 const app: Express = express();
 const server = http.createServer(app);
 configDotenv();
-app.use(cors());
+app.use(cookieParser());
+const corsOptions ={
+  origin: ['http://localhost:3001', 'https://maadhyam-b50d.onrender.com'], 
+  credentials:true,            //access-control-allow-credentials:true
+  optionSuccessStatus:200
+}
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

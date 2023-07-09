@@ -22,26 +22,22 @@ export const createUser = async (req: Request, res: Response) => {
     try {
       signupUserSchema.parse(req.body);
     } catch (error) {
-      res
-        .status(400)
-        .json({
-          success: false,
-          error,
-          message: "Some fields are missing or invalid",
-          errorType: BAD_REQUEST,
-        });
+      res.status(400).json({
+        success: false,
+        error,
+        message: "Some fields are missing or invalid",
+        errorType: BAD_REQUEST,
+      });
       return;
     }
 
     const user = await User.findOne({ email: req.body.email });
     if (user) {
-      res
-        .status(409)
-        .json({
-          success: false,
-          message: "Email already in user",
-          errorType: BAD_REQUEST,
-        });
+      res.status(409).json({
+        success: false,
+        message: "Email already in user",
+        errorType: BAD_REQUEST,
+      });
       return;
     }
 
@@ -61,14 +57,12 @@ export const createUser = async (req: Request, res: Response) => {
       user: savedUser,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal server error",
-        error,
-        errorType: INTERNAL_SERVER_ERROR,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    });
   }
 };
 
@@ -77,26 +71,22 @@ export const loginUser = async (req: Request, res: Response) => {
     try {
       loginUserSchema.parse(req.body);
     } catch (error) {
-      res
-        .status(400)
-        .json({
-          success: false,
-          error,
-          message: "Some fields are missing or invalid",
-          errorType: BAD_REQUEST,
-        });
+      res.status(400).json({
+        success: false,
+        error,
+        message: "Some fields are missing or invalid",
+        errorType: BAD_REQUEST,
+      });
       return;
     }
 
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: "User not found",
-          errorType: RESOURCE_NOT_FOUND,
-        });
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+        errorType: RESOURCE_NOT_FOUND,
+      });
       return;
     }
 
@@ -105,48 +95,58 @@ export const loginUser = async (req: Request, res: Response) => {
       user.password
     );
     if (!isPasswordValid) {
-      res
-        .status(401)
-        .json({
-          success: false,
-          message: "Invalid credentials",
-          errorType: INVALID_CREDENTIALS,
-        });
+      res.status(401).json({
+        success: false,
+        message: "Invalid credentials",
+        errorType: INVALID_CREDENTIALS,
+      });
       return;
     }
 
     const token = createToken({ _id: user._id, email: user.email });
-    res.status(200).json({
+    res.cookie("token", token, { httpOnly: true }).json({
       success: true,
       message: "User logged in successfully!",
-      token,
-      user
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal server error",
-        error,
-        errorType: INTERNAL_SERVER_ERROR,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    });
   }
 };
 
+export const logoutUser = async (req: Request, res: Response) => {
+  try {
+    res.clearCookie("token").json({
+      success: true,
+      message: "User logged out successfully!",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    })
+  }
+}
+
 export const getMe = async (req: Request, res: Response) => {
   try {
-    const user = await User.findOne({ email: req.body.user.user.email });
-    
+    const user = await User.findOne({
+      email: req.body.authorizedUser.user.email,
+    });
+
     res.status(200).json({ success: true, user, message: "User found" });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal server error",
-        error,
-        errorType: INTERNAL_SERVER_ERROR,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    });
   }
 };
