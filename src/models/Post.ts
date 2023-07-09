@@ -62,10 +62,6 @@ const PostSchema = new mongoose.Schema(
     views: {
       type: Number,
       default: 0,
-    },
-    publishDate: {
-      type: Date,
-      default: undefined
     }
   },
   {
