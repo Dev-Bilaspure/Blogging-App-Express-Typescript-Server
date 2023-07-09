@@ -204,6 +204,9 @@ export const publishPost = async (req: Request, res: Response) => {
     }
 
     post.isPublished = true;
+    if(!post.publishDate) {
+      post.publishDate = new Date();
+    }
     const postPublished = await post.save();
     res.status(200).json({
       success: true,
@@ -546,6 +549,9 @@ export const updatePost = async (req: Request, res: Response) => {
     post.tags = req.body.tags;
     post.isPublished = req.body.isPublished;
     post.isCommentsEnabled = req.body.isCommentsEnabled;
+    if(!post.publishDate) {
+      post.publishDate = new Date();
+    }
 
     const updatedPost = await Post.findByIdAndUpdate(postId, post, {
       new: true,
@@ -563,6 +569,28 @@ export const updatePost = async (req: Request, res: Response) => {
   }
 };
 
+
+// export const tempAPI = async (req: Request, res: Response) => {
+//   try {
+//     const posts = await Post.find();
+//     for(let i = 0; i < posts.length; i++) {
+//       const post = posts[i];
+//       post.publishDate = post.createdAt;
+//       await post.save();
+//     }
+//     // const updatedPosts = await Post.updateMany(posts);
+//     res.status(200).json({
+//       success: true,
+//       message: "Post updated successfully",
+//       posts
+//     })
+
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ success: false, message: "Internal server error", error });
+//   }
+// }
 /// Dump============================
 
 // export const createPost = async (req: Request, res: Response) => {
