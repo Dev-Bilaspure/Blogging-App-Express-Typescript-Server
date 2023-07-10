@@ -104,13 +104,16 @@ export const loginUser = async (req: Request, res: Response) => {
     }
 
     const token = createToken({ _id: user._id, email: user.email });
-    res.cookie("token", token, { httpOnly: true,
-      sameSite: "none",
-      secure: true,
-     }).json({
-      success: true,
-      message: "User logged in successfully!",
-    });
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+      })
+      .json({
+        success: true,
+        message: "User logged in successfully!",
+      });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -123,19 +126,23 @@ export const loginUser = async (req: Request, res: Response) => {
 
 export const logoutUser = async (req: Request, res: Response) => {
   try {
-    res.clearCookie("token").json({
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    }).json({
       success: true,
       message: "User logged out successfully!",
-    });
+    });;
   } catch (error) {
     res.status(500).json({
       success: false,
       message: "Internal server error",
       error,
       errorType: INTERNAL_SERVER_ERROR,
-    })
+    });
   }
-}
+};
 
 export const getMe = async (req: Request, res: Response) => {
   try {
