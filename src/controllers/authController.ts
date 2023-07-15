@@ -3,6 +3,7 @@ import { loginUserSchema, signupUserSchema } from "../utils/validators";
 import User from "../models/User";
 import {
   createToken,
+  generateRandomString,
   hashPassword,
   verifyPassword,
 } from "../utils/helperMethods";
@@ -41,7 +42,7 @@ export const createUser = async (req: Request, res: Response) => {
       return;
     }
 
-    req.body.username = req.body.email.split("@")[0];
+    req.body.username = req.body.email.split("@")[0] + generateRandomString(10);
 
     req.body.password = await hashPassword(req.body.password);
     const newUser = new User(req.body);
@@ -126,14 +127,41 @@ export const loginUser = async (req: Request, res: Response) => {
 
 export const logoutUser = async (req: Request, res: Response) => {
   try {
-    res.clearCookie("token", {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-    }).json({
+    res
+      .clearCookie("token", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+      })
+      .json({
+        success: true,
+        message: "User logged out successfully!",
+      });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+      errorType: INTERNAL_SERVER_ERROR,
+    });
+  }
+};
+
+export const checkUsernameAvailability = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { username } = req.params;
+    const user = await User.findOne({ username });
+    res.status(200).json({
       success: true,
-      message: "User logged out successfully!",
-    });;
+      message: !user
+        ? "Username is available"
+        : "Username is not available",
+      isAvailable: user ? false : true,
+      username: username,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,

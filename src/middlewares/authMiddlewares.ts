@@ -22,7 +22,11 @@ export const authenticateToken = (
   }
   jwt.verify(token, process.env.JWT_SECRET as string, (err: any, user: any) => {
     if (err) {
-      res.clearCookie("token").status(403).json({
+      res.clearCookie("token", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+      }).status(403).json({
         success: false,
         message: "Invalid token",
         errorType: INVALID_TOKEN,
@@ -52,7 +56,11 @@ export const authenticateTokenInitializeUser = (
   }
   jwt.verify(token, process.env.JWT_SECRET as string, (err: any, user: any) => {
     if (err) {
-      res.clearCookie("token").status(403).json({
+      res.clearCookie("token", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+      }).status(403).json({
         success: false,
         message: "Invalid token",
         errorType: INVALID_TOKEN,

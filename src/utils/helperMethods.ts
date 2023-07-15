@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import { configDotenv } from "dotenv";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 
 configDotenv();
 
@@ -33,3 +34,18 @@ export const createToken = (user: any) => {
   });
   return token;
 };
+
+export function generateRandomString(length: any) {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const characterCount = characters.length;
+  const randomBytes = crypto.randomBytes(length);
+  let randomString = "";
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = randomBytes[i] % characterCount;
+    randomString += characters.charAt(randomIndex);
+  }
+
+  return randomString;
+}
