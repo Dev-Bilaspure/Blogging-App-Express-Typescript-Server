@@ -33,11 +33,17 @@ export const getAllPosts = async (req: Request, res: Response) => {
       .skip((parsedPageno - 1) * parsedPagesize)
       .limit(parsedPagesize);
 
+    const totalPosts = await Post.countDocuments({ isPublished: true });
+
     if (posts.length === 0) {
-      res.status(200).json({ success: true, posts, message: "No posts found" });
+      res
+        .status(200)
+        .json({ success: true, posts, message: "No posts found", totalPosts });
       return;
     }
-    res.status(200).json({ success: true, posts, message: "All posts found" });
+    res
+      .status(200)
+      .json({ success: true, posts, message: "All posts found", totalPosts });
   } catch (error) {
     res.status(500).json({
       success: false,
